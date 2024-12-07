@@ -1,10 +1,12 @@
 #include <stdio.h>
-#define SIZE 64
+#define SIZE 22
 #define PAJAK 0.1
 
 void printMenu(int harga[]);
-void pesanan(int count, int pesan, int pilihan[]);
+void pesanan(int count, int pesan, int pilihan[], int stok[]);
 void printHarga(int count, int pilihan[], int harga[], double hargaTotal);
+void ubahHarga(int index, int harga[]);
+void updateStok(int index, int stok[]);
 
 int main(){
     //deklarasi dan inisialisasi
@@ -33,38 +35,124 @@ int main(){
         6000,  // Es Kelapa Muda
         4000   // Es Cappucino
     };
-    double hargaTotal = 0.0;
-
-    int count = 0;
-    printMenu(harga);
-    while(1){
-        int pesan;
-        printf("Pilih menu yang diinginkan (-1 untuk melakukan pembayaran): ");
-        scanf("%d", &pesan);
-        pesanan(count, pesan, pilihan);
-        count++;
-        if(pesan == -1) break;
+    int stok[SIZE];
+    for(int i = 0; i < SIZE; i++) {
+        stok[i] = 0;
     }
 
-    //Konfirmasi pembayaran
-    int metodePembayaran;
-    printHarga(count, pilihan, harga, hargaTotal);
-    while(1){
-        scanf("%d", &metodePembayaran);
-        switch(metodePembayaran){
-            case 1:
-            puts("Metode Cash dipilih.");
-            break;
-            case 2:
-            puts("Metode Cashless dipilih");
-            break;
-            default:
-            puts("Masukan salah, silakan isi kembali!");
+    // Program utama
+    while(1) {
+        puts("1. Program pemesanan\n2. Program Admin");
+        int statusProgram;
+        int statusPesan;
+        int statusAdmin;
+        while (1){
+            //Pemilihan antara program Pemesanan dan program Admin
+            scanf("%d", &statusProgram);
+            switch(statusProgram){
+                    case 1:
+                    puts("Memulai program pemesanan");
+
+                    //Program pemesanan
+                    while(1) {
+                        double hargaTotal = 0.0;
+                        int count = 0;
+                        printMenu(harga);
+                        while(1){
+                            int pesan;
+                            puts("Pilih menu yang diinginkan (-1 untuk melakukan pembayaran): ");
+                            //Error handling pada pilihan makanan
+                            while(1) {
+                                scanf("%d", &pesan);
+                                if(pesan == -1) break;
+                                if(stok[pesan] == 0) {
+                                    printf("Maaf stok untuk produk %d sedang habis. Silakan pilih menu lain", pesan);
+                                    puts("");
+                                } else {
+                                    pesanan(count, pesan, pilihan, stok);
+                                    count++;
+                                }
+                            }
+
+                        //Konfirmasi pembayaran
+                        int metodePembayaran;
+                        printHarga(count, pilihan, harga, hargaTotal);
+                        while(1){
+                            scanf("%d", &metodePembayaran);
+                            switch(metodePembayaran){
+                                case 1:
+                                puts("Metode Cash dipilih.");
+                                break;
+                                case 2:
+                                puts("Metode Cashless dipilih");
+                                break;
+                                default:
+                                puts("Masukan salah! Silakan isi kembali!");
+                            }
+                        if(metodePembayaran == 1 || metodePembayaran == 2) break;
+                        }
+                        printf("Terima kasih telah bertransaksi!");
+                        printf("Silakan ditunggu masakannya!");
+
+                        //Pemilihan untuk program Pemesanan
+                        puts("1. Memulai kembali program Pemesanan\n 2. Keluar dari program Pemesanan");
+                        while (1){
+                            scanf("%d", &statusPesan);
+                            switch(statusPesan){
+                                    case 1:
+                                    puts("Memulai program Pemesanan");
+                                    break;
+                                    case 2:
+                                    puts("Mengakhiri program Pemesanan");
+                                    break;
+                                    default:
+                                    puts("Masukan salah! Silakan isi kembali!");
+                                }
+                        }
+                        if (statusPesan == 2) break;
+                    }
+                    break;
+                    case 2:
+                    puts("Memulai program Admin");
+                    while(1) {
+                        //program Admin
+                        int index;
+                        int fitur;
+                        puts("Pilih fitur yang ingin digunakan:\n1. Pembaruan stok\n2. Pembaruan harga");
+                        scanf("%d", &fitur);
+                        switch(fitur) {
+                            case 1:
+                            updateStok(index, stok);
+                            break;
+                            case 2:
+                            ubahHarga(index, harga);
+                            break;
+                            default:
+                            puts("Maaf, fitur tidak tersedia");
+                        }
+
+                        //Pemilihan untuk akhir program Admin
+                        puts("1. Memulai kembali program Admin\n 2. Keluar dari program Admin");
+                            scanf("%d", &statusAdmin);
+                        switch(statusAdmin){
+                                case 1:
+                                puts("Memulai program Admin");
+                                break;
+                                case 2:
+                                puts("Mengakhiri program Admin");
+                                break;
+                                default:
+                                puts("Masukan salah! Silakan isi kembali!");
+                            }
+                    }
+                    break;
+                    default:
+                    puts("Masukan salah! Silakan isi kembali!");
+                }
         }
-    if(metodePembayaran == 1 || metodePembayaran == 2) break;
+        if (statusPesan == 2 || statusAdmin == 2) break;
     }
-    printf("Terima kasih telah bertransaksi!");
-    printf("Silakan ditunggu masakannya!");
+    
 
     return 0;
 }
@@ -127,7 +215,8 @@ void printMenu(int harga[]) {
 }
 
 
-void pesanan(int count, int pesan, int pilihan[]) {
+void pesanan(int count, int pesan, int pilihan[], int stok[]) {
+    stok[pesan] -= 1;
     pilihan[count] = pesan;
 }
 
@@ -136,6 +225,42 @@ void printHarga(int count, int pilihan[], int harga[], double hargaTotal) {
         hargaTotal += harga[pilihan[i] - 1];
     }
     hargaTotal += (hargaTotal * PAJAK);
+    puts("TOTAL BELANJA:");
     printf("Rp%.2lf\n", hargaTotal);
     puts("Pilih metode pembayaran:\n1. Cash\n2. Cashless");
+}
+
+void ubahHarga(int index, int harga[]) {
+    int hargaBaru;
+    puts("Masukkan produk yang ingin diubah: ");
+    scanf("%d", &index);
+    puts("Masukkan jumlah harga yang baru: ");
+    harga[index - 1] = hargaBaru; 
+}
+
+void updateStok(int index, int stok[]) {
+    int stokBaru;
+    int fitur2;
+    puts("Pilih fitur yang diinginkan:\n1. Update stok sebuah produk\n2. Update stok semua produk");
+    scanf("%d", &fitur2);
+    switch(fitur2) {
+        case 1:
+        puts("Masukkan produk yang ingin diubah: ");
+        scanf("%d", index);
+        puts("Masukkan stok  terbaru: ");
+        scanf("%d", &stokBaru);
+        stok[index - 1] = stokBaru; 
+        printf("Stok produk %d berhasil diperbarui", index);
+        puts("");
+        break;
+        case 2:
+        for(int i = 0; i < SIZE; i++) {
+            printf("Masukkan stok baru untuk produk %d: ", i + 1);
+            scanf("%d", &stokBaru);
+            stok[i] = stokBaru; 
+        }
+        puts("Semua stok berhasil diperbarui");
+        default:
+        puts("Masukkan salah! Silakan coba kembali!");
+    }
 }
