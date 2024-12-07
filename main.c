@@ -149,6 +149,7 @@ int main(){
                     default:
                     puts("Masukan salah! Silakan isi kembali!");
                 }
+            }
         }
         if (statusPesan == 2 || statusAdmin == 2) break;
     }
