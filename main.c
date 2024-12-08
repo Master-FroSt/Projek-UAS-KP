@@ -50,104 +50,108 @@ int main(){
             //Pemilihan antara program Pemesanan dan program Admin
             scanf("%d", &statusProgram);
             switch(statusProgram){
-                    case 1:
-                    puts("Memulai program pemesanan");
+                case 1:
+                puts("Memulai program pemesanan");
 
-                    //Program pemesanan
-                    while(1) {
-                        double hargaTotal = 0.0;
-                        int count = 0;
-                        printMenu(harga);
-                        while(1){
-                            int pesan;
-                            puts("Pilih menu yang diinginkan (-1 untuk melakukan pembayaran): ");
-                            //Error handling pada pilihan makanan
-                            while(1) {
-                                scanf("%d", &pesan);
-                                if(pesan == -1) break;
-                                if(stok[pesan] == 0) {
-                                    printf("Maaf stok untuk produk %d sedang habis. Silakan pilih menu lain", pesan);
-                                    puts("");
-                                } else {
-                                    pesanan(count, pesan, pilihan, stok);
-                                    count++;
-                                }
+                //Program pemesanan
+                while(1) {
+                    double hargaTotal = 0.0;
+                    int count = 0;
+                    printMenu(harga);
+                    while(1){
+                        int pesan;
+                        puts("Pilih menu yang diinginkan (-1 untuk melakukan pembayaran): ");
+                        //Error handling pada pilihan makanan
+                        while(1) {
+                            scanf("%d", &pesan);
+                            if(pesan == -1) break;
+                            if(stok[pesan] == 0) {
+                                printf("Maaf stok untuk produk %d sedang habis. Silakan pilih menu lain", pesan);
+                                puts("");
+                            } else {
+                                pesanan(count, pesan, pilihan, stok);
+                                count++;
                             }
-
-                        //Konfirmasi pembayaran
-                        int metodePembayaran;
-                        printHarga(count, pilihan, harga, hargaTotal);
-                        while(1){
-                            scanf("%d", &metodePembayaran);
-                            switch(metodePembayaran){
-                                case 1:
-                                puts("Metode Cash dipilih.");
-                                break;
-                                case 2:
-                                puts("Metode Cashless dipilih");
-                                break;
-                                default:
-                                puts("Masukan salah! Silakan isi kembali!");
-                            }
-                        if(metodePembayaran == 1 || metodePembayaran == 2) break;
                         }
-                        printf("Terima kasih telah bertransaksi!");
-                        printf("Silakan ditunggu masakannya!");
 
-                        //Pemilihan untuk program Pemesanan
-                        puts("1. Memulai kembali program Pemesanan\n 2. Keluar dari program Pemesanan");
-                        while (1){
-                            scanf("%d", &statusPesan);
-                            switch(statusPesan){
-                                    case 1:
-                                    puts("Memulai program Pemesanan");
-                                    break;
-                                    case 2:
-                                    puts("Mengakhiri program Pemesanan");
-                                    break;
-                                    default:
-                                    puts("Masukan salah! Silakan isi kembali!");
-                                }
-                        }
-                        if (statusPesan == 2) break;
-                    }
-                    break;
-                    case 2:
-                    puts("Memulai program Admin");
-                    while(1) {
-                        //program Admin
-                        int index;
-                        int fitur;
-                        puts("Pilih fitur yang ingin digunakan:\n1. Pembaruan stok\n2. Pembaruan harga");
-                        scanf("%d", &fitur);
-                        switch(fitur) {
+                    //Konfirmasi pembayaran
+                    int metodePembayaran;
+                    printHarga(count, pilihan, harga, hargaTotal);
+                    while(1){
+                        scanf("%d", &metodePembayaran);
+                        switch(metodePembayaran){
                             case 1:
-                            updateStok(index, stok);
+                            puts("Metode Cash dipilih.");
                             break;
                             case 2:
-                            ubahHarga(index, harga);
+                            puts("Metode Cashless dipilih");
                             break;
                             default:
-                            puts("Maaf, fitur tidak tersedia");
+                            puts("Masukan salah! Silakan isi kembali!");
                         }
+                    if(metodePembayaran == 1 || metodePembayaran == 2) break;
+                    }
+                    puts("Terima kasih telah bertransaksi!");
+                    puts("Silakan ditunggu masakannya!");
 
-                        //Pemilihan untuk akhir program Admin
-                        puts("1. Memulai kembali program Admin\n 2. Keluar dari program Admin");
-                            scanf("%d", &statusAdmin);
-                        switch(statusAdmin){
+                    //Pemilihan untuk program Pemesanan
+                    puts("1. Memulai kembali program Pemesanan\n2. Keluar dari program Pemesanan");
+                    while (1){
+                        scanf("%d", &statusPesan);
+                        switch(statusPesan){
                                 case 1:
-                                puts("Memulai program Admin");
+                                puts("Memulai program Pemesanan");
                                 break;
                                 case 2:
-                                puts("Mengakhiri program Admin");
+                                puts("Mengakhiri program Pemesanan");
                                 break;
                                 default:
                                 puts("Masukan salah! Silakan isi kembali!");
                             }
+                    if (statusPesan == 2) break; //Keluar dari switch statusPesan
                     }
-                    break;
-                    default:
-                    puts("Masukan salah! Silakan isi kembali!");
+                if (statusPesan == 2) break; //Keluar dari perulangan program pesan
+                }
+                break; //keluar dari switch statusProgram
+                case 2:
+                puts("Memulai program Admin");
+
+                //program Admin
+                while(1) {
+                    int index;
+                    int fitur;
+                    puts("Pilih fitur yang ingin digunakan:\n1. Pembaruan stok\n2. Pembaruan harga");
+                    scanf("%d", &fitur);
+                    switch(fitur) {
+                        case 1:
+                        updateStok(index, stok);
+                        break;
+                        case 2:
+                        ubahHarga(index, harga);
+                        break;
+                        default:
+                        puts("Maaf, fitur tidak tersedia");
+                    }
+
+                    //Pemilihan untuk akhir program Admin
+                    puts("1. Memulai kembali program Admin\n2. Keluar dari program Admin");
+                        scanf("%d", &statusAdmin);
+                    switch(statusAdmin){
+                        case 1:
+                        puts("Memulai program Admin");
+                        break;
+                        case 2:
+                        puts("Mengakhiri program Admin");
+                        break;
+                        default:
+                        puts("Masukan salah! Silakan isi kembali!");
+                    }
+                    if(statusAdmin == 2) break; //Keluar dari switch statusAdmin program admin
+                }
+                if(statusAdmin == 2) break; //Keluar dari perulangan program admin
+                break; //keluar dari switch statusProgram
+                default:
+                puts("Masukan salah! Silakan isi kembali!");
                 }
             }
         }
@@ -236,6 +240,7 @@ void ubahHarga(int index, int harga[]) {
     puts("Masukkan produk yang ingin diubah: ");
     scanf("%d", &index);
     puts("Masukkan jumlah harga yang baru: ");
+    scanf("%d", &hargaBaru);
     harga[index - 1] = hargaBaru; 
 }
 
@@ -247,7 +252,7 @@ void updateStok(int index, int stok[]) {
     switch(fitur2) {
         case 1:
         puts("Masukkan produk yang ingin diubah: ");
-        scanf("%d", index);
+        scanf("%d", &index);
         puts("Masukkan stok  terbaru: ");
         scanf("%d", &stokBaru);
         stok[index - 1] = stokBaru; 
@@ -261,6 +266,7 @@ void updateStok(int index, int stok[]) {
             stok[i] = stokBaru; 
         }
         puts("Semua stok berhasil diperbarui");
+        break;
         default:
         puts("Masukkan salah! Silakan coba kembali!");
     }
